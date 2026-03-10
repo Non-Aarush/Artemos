@@ -23,13 +23,6 @@ export function Side() {
                 ))}
             </nav>
 
-            <div className="mt-auto pt-4 border-t border-retro-gray">
-                <div className="text-xs text-retro-gray font-mono">
-                    <p>LAT: 00.00° N</p>
-                    <p>LNG: 00.00° E</p>
-                    <p>ALT: -- km</p>
-                </div>
-            </div>
 
             <Loc />
         </aside>

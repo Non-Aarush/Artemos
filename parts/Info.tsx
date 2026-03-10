@@ -1,8 +1,25 @@
 import React from 'react';
 import { useSats } from '@/logic/State';
+import { calcStats } from '@/logic/Utils';
 
 export function Info() {
     const { sel, opt, setOpt } = useSats();
+
+    // messy local state for telemetry refresh
+    const [stats, setStats] = React.useState({ v: "7.67", a: "408.2" });
+
+    React.useEffect(() => {
+        if (!sel) return;
+
+        const update = () => {
+            const s = calcStats(sel.tle);
+            setStats(s as any);
+        };
+
+        update();
+        const inter = setInterval(update, 2000);
+        return () => clearInterval(inter);
+    }, [sel]);
 
     return (
         <aside className="w-80 glass-panel h-full flex flex-col p-4 z-10 relative">
@@ -24,15 +41,11 @@ export function Info() {
                     <div className="space-y-2 text-sm font-mono">
                         <div className="flex justify-between border-b border-retro-panel-light pb-1">
                             <span className="text-retro-gray">V_VELOCITY</span>
-                            <span className="text-white">7.67 KM/S</span>
+                            <span className="text-white">{stats.v} KM/S</span>
                         </div>
                         <div className="flex justify-between border-b border-retro-panel-light pb-1">
                             <span className="text-retro-gray">H_ALTITUDE</span>
-                            <span className="text-white">408.2 KM</span>
-                        </div>
-                        <div className="flex justify-between border-b border-retro-panel-light pb-1">
-                            <span className="text-retro-gray">O_INC</span>
-                            <span className="text-white">51.64°</span>
+                            <span className="text-white">{stats.a} KM</span>
                         </div>
                         <div className="flex justify-between border-b border-retro-panel-light pb-1">
                             <span className="text-retro-gray">CAT_TYPE</span>
@@ -72,3 +85,4 @@ export function Info() {
         </aside>
     );
 }
+
