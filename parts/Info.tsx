@@ -5,7 +5,6 @@ import { calcStats } from '@/logic/Utils';
 export function Info() {
     const { sel, opt, setOpt } = useSats();
 
-    // messy local state for telemetry refresh
     const [stats, setStats] = React.useState({ v: "7.67", a: "408.2" });
 
     React.useEffect(() => {
