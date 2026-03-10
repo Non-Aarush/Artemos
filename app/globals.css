@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+@theme {
+  --color-retro-black: #0b0b0b;
+  --color-retro-panel: #1a1a1a;
+  --color-retro-panel-light: #242424;
+  --color-retro-green: #9eff6d;
+  --color-retro-green-light: #c7ff99;
+  --color-retro-gray: #3d3d3d;
+  --font-mono: var(--font-space-mono);
+}
+
+@layer base {
+  body {
+    background-color: var(--color-retro-black);
+    color: white;
+    font-family: var(--font-mono), monospace;
+    overflow-x: hidden;
+  }
+}
+
+@layer utilities {
+  .bg-grid-pattern {
+    position: relative;
+  }
+
+  .bg-grid-pattern::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image:
+      linear-gradient(var(--color-retro-gray) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-retro-gray) 1px, transparent 1px);
+    background-size: 40px 40px;
+    background-position: center top;
+    opacity: 0.15;
+    pointer-events: none;
+  }
+
+  .glass-panel {
+    background-color: rgba(26, 26, 26, 0.8);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--color-retro-gray);
+  }
+}
+
+/* Custom Scrollbar for cyber feel */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-retro-black);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-retro-green);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-retro-green-light);
+}
