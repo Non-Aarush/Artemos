@@ -1,51 +1,85 @@
-# 🛰️ Artemos — Space Dashboard
+<![CDATA[<div align="center">
 
+# 🛰️ Artemos
 
-**Artemos** is a high-performance, interactive 3D satellite visualization platform designed to bridge the gap between complex orbital mechanics and cinematic web design. It tracks thousands of satellites in real-time, providing technical telemetry, orbital paths, and geographic data through a sleek, retro-futuristic HUD.
+**Real-time 3D satellite tracker with a retro-futuristic aesthetic**
+   
 
-<img width="1866" height="888" alt="image" src="https://github.com/user-attachments/assets/120827e4-ff45-47cd-b143-b2665bc9d9a3" />
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org/)
+[![Three.js](https://img.shields.io/badge/Three.js-0.183-black?logo=three.js)](https://threejs.org/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-
-## ✨ Core Experience
-
-### 🌍 Real-Time 3D Visualization
-Watch thousands of satellites traverse the globe in real-time. The engine uses **pixel-perfect texture mapped meshes** and **custom shaders** to render Earth with a distinct "digital twin" aesthetic.
-
-### 📡 Physics-Based Propagation
-Positions are not static. Using **SGP4/SDP4 orbital models** , Artemos calculates the exact location of every object every frame based on official TLE (Two-Line Element) data from CelesTrak.
-
-### 🔍 Discovery & Telemetry
-- **Categorized Tracking**: Instantly switch between Starlink, GPS, Scientific, Weather, and Space Stations.
-- **Deep Intel**: Click any satellite to "lock on" and view its velocity, altitude, orbital inclination, and raw TLE data.
-- **Local Scanner**: Use the "Scan Overhead" feature to identify satellites currently passing through your specific sky coordinates.
-
-
-
-## 🛠️ Technical Stack
-- **Next.js**: Utilizing the App Router for optimized performance and server-side navigation.
-- **Three.js + React Three Fiber**: The heavy lifting for 3D rendering, including instance mesh optimization for high-count satellite displays.
-- **Tailwind CSS**: Built with a custom theme for rapid, consistent styling of HUD elements.
-
-
-## 🚀 Getting Started
-
-1. **Clone & Install**:
-   ```bash
-   git clone https://github.com/your-repo/artemos.git
-   cd artemos/app
-   npm install
-   ```
-
-2. **Development**:
-   ```bash
-   npm run dev
-   ```
-
-3. **Production Build**:
-   ```bash
-   npm run build
-   ```
+</div>
 
 ---
 
+Artemos visualizes thousands of orbiting satellites on an interactive 3D globe using real TLE data from [CelesTrak](https://celestrak.org/). Click any dot to lock on, inspect its telemetry, and watch its orbital path trace across the Earth.
 
+## Demo
+
+> **Live**: https://artemos.vercel.app
+
+## Features
+
+- **Live SGP4 propagation** — satellite positions computed every frame
+- **Lock-on telemetry** — click any satellite to see velocity, altitude, category, and raw TLE data
+- **Orbital path rendering** — unique trajectory lines drawn per-satellite based on its actual orbit
+- **Category filters** — Active, Space Stations, GPS, Weather, Scientific, Iridium, Starlink
+- **Full-text search** — filter satellites by name in real time
+- **Overhead scanner** — detect satellites currently above your coordinates
+- **Post-processing** — bloom and luminance effects for the signature green glow
+
+## Tech Stack
+
+| Layer | Tech |
+|-------|------|
+| Framework | Next.js |
+| 3D Engine | Three.js + React Three Fiber + Drei |
+| Post-FX | @react-three/postprocessing |
+| Orbital Math | satellite.js (SGP4/SDP4) |
+| Styling | Tailwind CSS |
+| Font | [Monocraft](https://github.com/IdreesInc/Monocraft) (pixel monospace) |
+| Data Source | CelesTrak NORAD TLE feeds |
+
+## Project Structure
+
+```
+app/
+├── app/
+│   ├── api/s/         
+│   ├── globals.css    
+│   ├── layout.tsx     
+│   └── page.tsx        
+├── logic/
+│   ├── AppTypes.ts   
+│   ├── Data.ts         
+│   ├── State.tsx       
+│   └── Utils.ts       
+├── parts/
+│   ├── Main.tsx    
+│   ├── Globe.tsx      
+│   ├── Dots.tsx        
+│   ├── Ring.tsx        
+│   ├── Info.tsx        
+│   ├── Side.tsx       
+│   ├── Top.tsx       
+│   └── Loc.tsx         
+└── public/
+    └── textures/     
+```
+
+## Getting Started
+
+```bash
+git clone https://github.com/Non-Aarush/Artemos.git
+cd Artemos/app
+npm install
+npm run dev
+```
+
+```bash
+npm run build
+npm start
+```
+
+---
