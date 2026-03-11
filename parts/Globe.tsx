@@ -14,7 +14,7 @@ export function Globe() {
     tex.generateMipmaps = false;
 
     return (
-        <mesh ref={mesh} rotation={[0, 0, 0]} castShadow receiveShadow>
+        <mesh ref={mesh} rotation={[0, 0, 0]} castShadow receiveShadow raycast={() => null}>
             <sphereGeometry args={[2, 64, 64]} />
             <meshStandardMaterial
                 map={tex}
@@ -23,7 +23,7 @@ export function Globe() {
                 metalness={0}
             />
 
-            <mesh>
+            <mesh raycast={() => null}>
                 <sphereGeometry args={[2.05, 64, 64]} />
                 <meshBasicMaterial
                     color="#202020"

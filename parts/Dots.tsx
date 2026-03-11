@@ -5,7 +5,7 @@ import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { getSatPos } from '@/logic/Utils';
 import { useSats } from '@/logic/State';
-import { subgroupShuffleDown } from 'three/tsl';
+
 
 export function Dots() {
     const mainMesh = useRef<THREE.InstancedMesh>(null!);
@@ -75,7 +75,7 @@ export function Dots() {
     if (satList.length === 0) return null;
 
     return (
-        <group>
+        <group key={satList.length}>
             <instancedMesh
                 ref={mainMesh}
                 args={[undefined, undefined, satList.length]}
@@ -90,7 +90,7 @@ export function Dots() {
                 ref={targetMesh}
                 args={[undefined, undefined, satList.length]}
                 frustumCulled={false}
-                onPointerUp={onPointClick}
+                onClick={onPointClick}
                 onPointerOver={onPointHover}
                 onPointerOut={onPointOut}
             >
