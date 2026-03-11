@@ -4,8 +4,8 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import * as satellite from 'satellite.js';
 
-import type { SatInfo } from './types';
-export type { TleData, Coords, SatInfo, Groups } from './types';
+import type { SatInfo } from './AppTypes';
+export type { TleData, Coords, SatInfo, Groups } from './AppTypes';
 
 
 interface AppState {

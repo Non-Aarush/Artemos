@@ -1,4 +1,4 @@
-import { Groups } from './types';
+import { Groups } from './AppTypes';
 
 export const GroupsList: Groups[] = [
     {

@@ -1,5 +1,5 @@
 import * as satellite from 'satellite.js';
-import { SatInfo, Coords } from './types';
+import { SatInfo, Coords } from './AppTypes';
 
 export const eciTo3d = (posEci: satellite.EciVec3<number>, gmst: number): Coords => {
     const geodetic = satellite.eciToGeodetic(posEci, gmst);
