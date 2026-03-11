@@ -1,18 +1,12 @@
 
 # 🛰️ Artemos
 
-**Real-time 3D satellite tracker with a retro-futuristic aesthetic**
-   
+**Real-time 3D satellite tracker**
 
-[![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org/)
-[![Three.js](https://img.shields.io/badge/Three.js-0.183-black?logo=three.js)](https://threejs.org/)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+Artemos visualizes thousands of orbiting satellites on an interactive 3D globe using real TLE data from [CelesTrak](https://celestrak.org/). Click any dot to lock on, inspect its telemetry, and watch its orbital path trace across the Earth. It is a high-performance, interactive 3D satellite visualization platform designed to bridge the gap between complex orbital mechanics and cinematic web design. It tracks thousands of satellites in real-time, providing technical telemetry, orbital paths, and geographic data.
 
-</div>
+<img width="1866" height="888" alt="Screenshot 2026-03-11 141816" src="https://github.com/user-attachments/assets/a1ec9344-80ee-4800-9e0e-2c1b9751826e" />
 
----
-
-Artemos visualizes thousands of orbiting satellites on an interactive 3D globe using real TLE data from [CelesTrak](https://celestrak.org/). Click any dot to lock on, inspect its telemetry, and watch its orbital path trace across the Earth.
 
 ## Demo
 
