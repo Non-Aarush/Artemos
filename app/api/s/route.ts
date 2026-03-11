@@ -2,34 +2,39 @@ import { NextResponse } from 'next/server';
 import { GroupsList } from '@/logic/Data';
 import { parseTle } from '@/logic/Utils';
 
-let cache: { [key: string]: { d: any, ts: number } } = {};
-const TTL = 3600000;
+let cache: { [key: string]: { data: any, timestamp: number } } = {};
+const CACHE_TTL = 3600000; // 1 hour
 
 export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
-    const cat = searchParams.get('category') || 'active';
-    const q = searchParams.get('q')?.toLowerCase() || '';
+    const categoryId = searchParams.get('category') || 'active';
+    const searchTerm = searchParams.get('q')?.toLowerCase() || '';
 
     try {
-        const conf = GroupsList.find(c => c.id === cat) || GroupsList[0];
-        let d;
+        const groupConfig = GroupsList.find(c => c.id === categoryId) || GroupsList[0];
+        let rawData;
         const now = Date.now();
 
-        if (cache[conf.id] && (now - cache[conf.id].ts < TTL)) {
-            d = cache[conf.id].d;
+        if (cache[groupConfig.id] && (now - cache[groupConfig.id].timestamp < CACHE_TTL)) {
+            rawData = cache[groupConfig.id].data;
         } else {
-            const r = await fetch(conf.url);
-            d = await r.text();
-            cache[conf.id] = { d, ts: now };
+            const response = await fetch(groupConfig.url);
+            rawData = await response.text();
+            cache[groupConfig.id] = { data: rawData, timestamp: now };
         }
 
-        let list = parseTle(d, conf.id);
-        if (q) {
-            list = list.filter(s => s.name.toLowerCase().includes(q) || s.id.includes(q));
+        let satList = parseTle(rawData, groupConfig.id);
+
+        if (searchTerm) {
+            satList = satList.filter(sat =>
+                sat.name.toLowerCase().includes(searchTerm) ||
+                sat.id.includes(searchTerm)
+            );
         }
 
-        return NextResponse.json(list.slice(0, 2000));
-    } catch (e) {
-        return NextResponse.json({ err: 'API FAIL' }, { status: 500 });
+        return NextResponse.json(satList.slice(0, 2000));
+    } catch (err) {
+        console.error('api error:', err);
+        return NextResponse.json({ error: 'FETCH_ERROR' }, { status: 500 });
     }
 }

@@ -4,48 +4,79 @@ import React, { useMemo } from 'react';
 import * as THREE from 'three';
 import * as satellite from 'satellite.js';
 import { useSats } from '@/logic/State';
-import { eciTo3d } from '@/logic/Utils';
+import { Line } from '@react-three/drei';
 
 export function Ring() {
-    const { sel } = useSats();
+    const { focusSat } = useSats();
 
-    const pts = useMemo(() => {
-        if (!sel) return [];
+    const segments = useMemo(() => {
+        if (!focusSat) return null;
 
-        const rec = satellite.twoline2satrec(sel.tle.line1, sel.tle.line2);
-        const list: THREE.Vector3[] = [];
+        const satrec = satellite.twoline2satrec(focusSat.tle.line1, focusSat.tle.line2);
         const now = new Date();
+        const catNum = parseInt(focusSat.id) || 1;
+        const seed = ((catNum * 2654435761) >>> 0) / 4294967296; // hash to 0-1
 
-        for (let i = 0; i < 360; i++) {
-            const d = new Date(now.getTime() + i * 30 * 1000);
-            const p = satellite.propagate(rec, d);
+        // Vary window: 30 min to 300 min (0.5 to 5 hours)
+        const windowMin = 30 + seed * 270;
+
+        const steps = Math.min(400, Math.max(60, Math.floor(windowMin * 2)));
+        const startTime = now.getTime() - (windowMin / 2) * 60 * 1000;
+
+        const allSegments: THREE.Vector3[][] = [];
+        let current: THREE.Vector3[] = [];
+        let prevLon = 0;
+        let prevValid = false;
+
+        for (let i = 0; i <= steps; i++) {
+            const d = new Date(startTime + (i / steps) * windowMin * 60 * 1000);
+            const p = satellite.propagate(satrec, d);
 
             if (p && p.position && typeof p.position !== 'boolean') {
-                const g = satellite.gstime(d);
-                const pos = eciTo3d(p.position as satellite.EciVec3<number>, g);
-                list.push(new THREE.Vector3(pos.x, pos.y, pos.z));
+                const pos = p.position as satellite.EciVec3<number>;
+                const gmst = satellite.gstime(d);
+                const gd = satellite.eciToGeodetic(pos, gmst);
+
+                const R = 6371;
+                const s = 2 / R;
+                const dist = (R + gd.height) * s;
+                const lon = gd.longitude;
+
+                // Break at date line crossings
+                if (prevValid && Math.abs(lon - prevLon) > Math.PI) {
+                    if (current.length > 1) allSegments.push(current);
+                    current = [];
+                }
+                prevLon = lon;
+                prevValid = true;
+
+                current.push(new THREE.Vector3(
+                    dist * Math.cos(gd.latitude) * Math.cos(gd.longitude),
+                    dist * Math.sin(gd.latitude),
+                    dist * Math.cos(gd.latitude) * Math.sin(gd.longitude)
+                ));
             }
         }
-        return list;
-    }, [sel]);
 
-    if (!sel || pts.length < 2) return null;
+        if (current.length > 1) allSegments.push(current);
+        return allSegments.length > 0 ? allSegments : null;
+    }, [focusSat]);
+
+    if (!focusSat || !segments) return null;
 
     return (
-        <line>
-            <bufferGeometry>
-                <bufferAttribute
-                    attach="attributes-position"
-                    args={[new Float32Array(pts.flatMap(p => [p.x, p.y, p.z])), 3]}
+        <group>
+            {segments.map((pts, idx) => (
+                <Line
+                    key={idx}
+                    points={pts}
+                    color="#ff8c00"
+                    lineWidth={2}
+                    transparent
+                    opacity={0.8}
+                    raycast={() => null}
                 />
-            </bufferGeometry>
-            <lineBasicMaterial
-                color="#c7ff99"
-                linewidth={2}
-                transparent
-                opacity={0.6}
-                depthWrite={false}
-            />
-        </line>
+            ))}
+        </group>
     );
 }

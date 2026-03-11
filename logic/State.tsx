@@ -1,53 +1,65 @@
+
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import { SatInfo } from './Types';
+import * as satellite from 'satellite.js';
 
-interface State {
-    sats: SatInfo[];
-    setSats: (s: SatInfo[]) => void;
-    sel: SatInfo | null;
-    setSel: (s: SatInfo | null) => void;
-    opt: {
+import type { SatInfo } from './types';
+export type { TleData, Coords, SatInfo, Groups } from './types';
+
+
+interface AppState {
+    satList: SatInfo[];
+    setSatList: (list: SatInfo[]) => void;
+    focusSat: SatInfo | null;
+    setFocusSat: (s: SatInfo | null) => void;
+    query: {
         search: string;
         cat: string;
     };
-    setOpt: (f: { search: string; cat: string }) => void;
+    setQuery: (q: { search: string; cat: string }) => void;
+    hoverSat: SatInfo | null;
+    setHoverSat: (sat: SatInfo | null) => void;
 }
 
-const Ctx = createContext<State | undefined>(undefined);
+const SatContext = createContext<AppState | undefined>(undefined);
 
 export function SatProv({ children }: { children: ReactNode }) {
-    const [sats, setSats] = useState<SatInfo[]>([]);
-    const [sel, setSel] = useState<SatInfo | null>(null);
-    const [opt, setOpt] = useState({
+    const [satList, setSatList] = useState<SatInfo[]>([]);
+    const [focusSat, setFocusSat] = useState<SatInfo | null>(null);
+    const [query, setQuery] = useState({
         search: '',
         cat: 'active'
     });
+    const [hoverSat, setHoverSat] = useState<SatInfo | null>(null);
 
+    // reset on cat change
     useEffect(() => {
-        setSel(null);
-        setSats([]);
-    }, [opt.cat]);
+        setFocusSat(null);
+        setHoverSat(null);
+        setSatList([]);
+    }, [query.cat]);
 
     return (
-        <Ctx.Provider value={{
-            sats,
-            setSats,
-            sel,
-            setSel,
-            opt,
-            setOpt
+        <SatContext.Provider value={{
+            satList,
+            setSatList,
+            focusSat,
+            setFocusSat,
+            query,
+            setQuery,
+            hoverSat,
+            setHoverSat
         }}>
             {children}
-        </Ctx.Provider>
+        </SatContext.Provider>
     );
 }
 
 export function useSats() {
-    const c = useContext(Ctx);
-    if (c === undefined) {
+    const ctx = useContext(SatContext);
+    if (ctx === undefined) {
         throw new Error('useSats must be used within SatProv');
     }
-    return c;
+    return ctx;
 }

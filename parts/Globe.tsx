@@ -13,12 +13,6 @@ export function Globe() {
     tex.magFilter = THREE.NearestFilter;
     tex.generateMipmaps = false;
 
-    useFrame((_, delta) => {
-        if (mesh.current) {
-            mesh.current.rotation.y += delta * 0.02;
-        }
-    });
-
     return (
         <mesh ref={mesh} rotation={[0, 0, 0]} castShadow receiveShadow>
             <sphereGeometry args={[2, 64, 64]} />

@@ -6,34 +6,56 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import { Globe } from './Globe';
-import { Sky } from './Sky';
 import { Dots } from './Dots';
 import { Ring } from './Ring';
 import { useSats } from '@/logic/State';
 import { getSatPos } from '@/logic/Utils';
 
 function Marker() {
-    const { sel } = useSats();
-    const mesh = useRef<THREE.Mesh>(null);
+    const { focusSat } = useSats();
+    const mesh = useRef<THREE.Mesh>(null!);
 
     useFrame(() => {
-        if (!mesh.current || !sel) return;
-        const p = getSatPos(sel.tle);
+        if (!mesh.current || !focusSat) return;
+        const p = getSatPos(focusSat.tle);
         if (p) {
             mesh.current.position.set(p.x, p.y, p.z);
         }
     });
 
-    if (!sel) return null;
+    if (!focusSat) return null;
 
     return (
         <mesh ref={mesh} raycast={() => null}>
             <sphereGeometry args={[0.04, 16, 16]} />
-            <meshBasicMaterial color="#c7ff99" transparent opacity={0.6} />
+            <meshBasicMaterial color="#ff8c00" transparent opacity={0.8} />
             <mesh raycast={() => null}>
                 <sphereGeometry args={[0.08, 16, 16]} />
-                <meshBasicMaterial color="#9eff6d" transparent opacity={0.2} />
+                <meshBasicMaterial color="#ff8c00" transparent opacity={0.3} />
             </mesh>
+        </mesh>
+    );
+}
+
+function HoverMarker() {
+    const { hoverSat } = useSats();
+    const mesh = useRef<THREE.Mesh>(null!);
+
+    useFrame((state) => {
+        if (!mesh.current || !hoverSat) return;
+        const p = getSatPos(hoverSat.tle);
+        if (p) {
+            mesh.current.position.set(p.x, p.y, p.z);
+            mesh.current.lookAt(state.camera.position);
+        }
+    });
+
+    if (!hoverSat) return null;
+
+    return (
+        <mesh ref={mesh} raycast={() => null}>
+            <ringGeometry args={[0.06, 0.07, 32]} />
+            <meshBasicMaterial color="#9eff6d" transparent opacity={0.8} side={THREE.DoubleSide} />
         </mesh>
     );
 }
@@ -55,10 +77,10 @@ export default function Main() {
                 />
                 <Suspense fallback={null}>
                     <Globe />
-                    <Sky count={3000} />
                     <Dots />
                     <Ring />
                     <Marker />
+                    <HoverMarker />
                 </Suspense>
                 <OrbitControls
                     enablePan={false}
