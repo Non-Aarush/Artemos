@@ -3,6 +3,9 @@
 
 **Artemos** is a high-performance, interactive 3D satellite visualization platform designed to bridge the gap between complex orbital mechanics and cinematic web design. It tracks thousands of satellites in real-time, providing technical telemetry, orbital paths, and geographic data through a sleek, retro-futuristic HUD.
 
+<img width="1866" height="888" alt="image" src="https://github.com/user-attachments/assets/120827e4-ff45-47cd-b143-b2665bc9d9a3" />
+
+
 ## ✨ Core Experience
 
 ### 🌍 Real-Time 3D Visualization
